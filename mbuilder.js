@@ -31,6 +31,7 @@ async function copyAssets(context) {
 
 module.exports = async (context) => {
   const dirs = fs.opendirSync(context.inputContents);
+  fs.mkdirSync(context.outputContents, { recursive: true });
   for await (const file of dirs) {
     const category = path.basename(file.name, '.md');
     if (file.isDirectory()) {
