@@ -2,7 +2,7 @@
 
 const program = require('commander');
 const mbuilder = require('./mbuilder');
-const Context = require('./context');
+const Context = require('./src/context');
 
 async function main() {
   program
