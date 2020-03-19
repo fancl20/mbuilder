@@ -41,5 +41,9 @@ module.exports = async (context) => {
       context.renderFile(file.name, category, category);
     }
   }
+  fs.copy(
+    path.join(context.inputBase, 'index.html'),
+    path.join(context.outputBase, 'index.html')
+  );
   copyAssets(context);
 };
