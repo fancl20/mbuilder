@@ -21,7 +21,7 @@ class Renderer extends marked.Renderer {
         return math;
       }
     }
-    super.code(code, lang, escaped)
+    return super.code(code, lang, escaped);
   }
   codespan(text) {
     const math = mathsExpression(text);
@@ -31,12 +31,19 @@ class Renderer extends marked.Renderer {
     return super.codespan(text);
   }
 }
-const renderer = new Renderer();
+marked.setOptions({
+  renderer: new Renderer(),
+  highlight: (code, language) => {
+    const hljs = require('highlight.js');
+    const validLanguage = hljs.getLanguage(language) ? language : 'plaintext';
+    return hljs.highlight(validLanguage, code).value;
+  },
+});
 
 module.exports = (text) => {
   const res = fm(text);
   return {
     metadata: res.attributes,
-    html: marked(res.body, { renderer }),
+    html: marked(res.body),
   };
 };

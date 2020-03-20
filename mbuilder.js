@@ -22,11 +22,13 @@ async function copyAssets(context) {
   if (fs.existsSync(context.inputAssets)) {
     fs.copy(context.inputAssets, context.outputAssets, { overwrite: true });
   }
-  const css = path.join(context.outputAssets, 'css');
-  fs.mkdirSync(css, { recursive: true });
+  const styles = path.join(context.outputAssets, 'styles');
+  fs.mkdirSync(styles, { recursive: true });
   const katexDir = path.dirname(require.resolve('katex'));
-  fs.copy(path.join(katexDir, 'katex.min.css'), path.join(css, 'katex.min.css'));
-  fs.copy(path.join(katexDir, 'fonts'), path.join(css, 'fonts'));
+  fs.copy(path.join(katexDir, 'katex.min.css'), path.join(styles, 'katex/katex.min.css'));
+  fs.copy(path.join(katexDir, 'fonts'), path.join(styles, 'katex/fonts'));
+  const hljsDir = path.dirname(require.resolve('highlight.js'));
+  fs.copy(path.join(hljsDir, '../styles'), path.join(styles, 'hljs'));
 }
 
 module.exports = async (context) => {
