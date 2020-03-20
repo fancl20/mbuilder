@@ -2,8 +2,6 @@ const marked = require('marked');
 const katex = require('katex');
 const fm = require('front-matter');
 
-const renderer = new marked.Renderer();
-
 function mathsExpression(rawExpr) {
   if (rawExpr.match(/^\$\$[\s\S]*\$\$$/)) {
     const expr = rawExpr.substr(2, rawExpr.length - 4);
@@ -15,25 +13,25 @@ function mathsExpression(rawExpr) {
   return null;
 }
 
-const rendererCode = renderer.code;
-renderer.code = (code, lang, escaped) => {
-  if (!lang) {
-    const math = mathsExpression(code);
+class Renderer extends marked.Renderer {
+  code(code, lang, escaped) {
+    if (!lang) {
+      const math = mathsExpression(code);
+      if (math) {
+        return math;
+      }
+    }
+    super.code(code, lang, escaped)
+  }
+  codespan(text) {
+    const math = mathsExpression(text);
     if (math) {
       return math;
     }
+    return super.codespan(text);
   }
-  return rendererCode(code, lang, escaped);
-};
-
-const rendererCodespan = renderer.codespan;
-renderer.codespan = (text) => {
-  const math = mathsExpression(text);
-  if (math) {
-    return math;
-  }
-  return rendererCodespan(text);
-};
+}
+const renderer = new Renderer();
 
 module.exports = (text) => {
   const res = fm(text);
