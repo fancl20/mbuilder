@@ -44,7 +44,7 @@ module.exports = async (context) => {
   }
   fs.copy(
     path.join(context.inputBase, 'index.html'),
-    path.join(context.outputBase, 'index.html')
+    path.join(context.outputBase, 'index.html'),
   );
   copyAssets(context);
 };

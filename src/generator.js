@@ -29,6 +29,7 @@ module.exports = {
     for await (const file of pages) {
       names.push(path.basename(file.name, path.extname(file.name)));
     }
+    names.sort();
     return (current) => (rewriter) => {
       for (const [i, name] of names.entries()) {
         const url = `/contents/${escape(name)}.html`;
@@ -43,7 +44,7 @@ module.exports = {
           tagName: 'a',
           attrs,
         });
-        rewriter.emitText({ text: name });
+        rewriter.emitText({ text: name.replace(/^\d+-/, '') });
         rewriter.emitEndTag({ tagName: 'a' });
       }
     };
@@ -57,6 +58,7 @@ module.exports = {
     ];
   },
   async generateIndexRenderer(metadatas) {
+    metadatas.sort((a, b) => - a.url.localeCompare(b.url));
     return (rewriter) => {
       rewriter.emitStartTag({ tagName: 'ul', attrs: [] });
       for (const metadata of metadatas) {
