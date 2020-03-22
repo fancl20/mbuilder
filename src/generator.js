@@ -31,22 +31,20 @@ module.exports = {
     }
     names.sort();
     return (current) => (rewriter) => {
-      for (const [i, name] of names.entries()) {
+      rewriter.emitStartTag({ tagName: 'ul', attrs: [] });
+      for (const name of names) {
         const url = `/contents/${escape(name)}.html`;
         const attrs = [{ name: 'href', value: url }];
         if (name === current) {
           attrs.push({ name: 'class', value: 'navigator-link-active' });
         }
-        if (i !== 0) {
-          rewriter.emitText({ text: ' | ' });
-        }
-        rewriter.emitStartTag({
-          tagName: 'a',
-          attrs,
-        });
+        rewriter.emitStartTag({ tagName: 'li', attrs: [] });
+        rewriter.emitStartTag({ tagName: 'a', attrs });
         rewriter.emitText({ text: name.replace(/^\d+-/, '') });
         rewriter.emitEndTag({ tagName: 'a' });
+        rewriter.emitEndTag({ tagName: 'li' });
       }
+      rewriter.emitEndTag({ tagName: 'ul' });
     };
   },
   async generateMarkdownRenderer(filePath) {
@@ -60,17 +58,36 @@ module.exports = {
   async generateIndexRenderer(metadatas) {
     metadatas.sort((a, b) => - a.url.localeCompare(b.url));
     return (rewriter) => {
-      rewriter.emitStartTag({ tagName: 'ul', attrs: [] });
+      rewriter.emitStartTag({
+        tagName: 'ul',
+        attrs: [{ name: 'id', value: 'pages-index' }]
+      });
       for (const metadata of metadatas) {
         rewriter.emitStartTag({ tagName: 'li', attrs: [] });
+
+        // Title
         rewriter.emitStartTag({
-          tagName: 'a',
-          attrs: [
-            { name: 'href', value: metadata.url },
-          ],
+          tagName: 'div', attrs: [{ name: 'id', value: 'pages-index-title' }]
+        });
+        rewriter.emitStartTag({
+          tagName: 'a', attrs: [{ name: 'href', value: metadata.url }]
         });
         rewriter.emitText({ text: metadata.title });
         rewriter.emitEndTag({ tagName: 'a' });
+        rewriter.emitEndTag({ tagName: 'div' });
+        // Date
+        rewriter.emitStartTag({
+          tagName: 'div', attrs: [{ name: 'id', value: 'pages-index-date' }]
+        });
+        rewriter.emitText({ text: metadata.date.toISOString().substring(0, 10) });
+        rewriter.emitEndTag({ tagName: 'div' });
+        // Authors
+        rewriter.emitStartTag({
+          tagName: 'div', attrs: [{ name: 'id', value: 'pages-index-authors' }]
+        });
+        rewriter.emitText({ text: metadata.authors.join(', ') });
+        rewriter.emitEndTag({ tagName: 'div' });
+
         rewriter.emitEndTag({ tagName: 'li' });
       }
       rewriter.emitEndTag({ tagName: 'ul' });
