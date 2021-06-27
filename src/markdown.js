@@ -9,7 +9,7 @@ function mathsExpression(rawExpr) {
     return katex.renderToString(expr, { displayMode: true });
   } if (rawExpr.match(/^\$[\s\S]*\$$/)) {
     const expr = rawExpr.substr(1, rawExpr.length - 2);
-    return katex.renderToString(expr, { isplayMode: false });
+    return katex.renderToString(expr, { displayMode: false });
   }
   return null;
 }
