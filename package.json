@@ -5,7 +5,8 @@
   "main": "mbuilder.js",
   "bin": "cli.js",
   "scripts": {
-    "cli": "node cli.js"
+    "cli": "node cli.js",
+    "lint": "eslint --fix src/**/*.js"
   },
   "keywords": [],
   "author": "",

@@ -1,6 +1,7 @@
 const marked = require('marked');
 const katex = require('katex');
 const fm = require('front-matter');
+const hljs = require('highlight.js');
 
 function mathsExpression(rawExpr) {
   if (rawExpr.match(/^\$\$[\s\S]*\$\$$/)) {
@@ -23,6 +24,7 @@ class Renderer extends marked.Renderer {
     }
     return super.code(code, lang, escaped);
   }
+
   codespan(text) {
     const math = mathsExpression(text);
     if (math) {
@@ -34,7 +36,6 @@ class Renderer extends marked.Renderer {
 marked.setOptions({
   renderer: new Renderer(),
   highlight: (code, language) => {
-    const hljs = require('highlight.js');
     const validLanguage = hljs.getLanguage(language) ? language : 'plaintext';
     return hljs.highlight(validLanguage, code).value;
   },
