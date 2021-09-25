@@ -10,7 +10,8 @@ async function main() {
     .option('--output <path>', 'output dir')
     .parse(process.argv);
 
-  const context = await Context.build(program.input, program.output);
+  const options = program.opts();
+  const context = await Context.build(options.input, options.output);
   mbuilder(context);
 }
 
