@@ -3,38 +3,48 @@ const katex = require('katex');
 const fm = require('front-matter');
 const hljs = require('highlight.js');
 
-function mathsExpression(rawExpr) {
-  if (rawExpr.match(/^\$\$[\s\S]*\$\$$/)) {
-    const expr = rawExpr.substr(2, rawExpr.length - 4);
-    return katex.renderToString(expr, { displayMode: true });
-  } if (rawExpr.match(/^\$[\s\S]*\$$/)) {
-    const expr = rawExpr.substr(1, rawExpr.length - 2);
-    return katex.renderToString(expr, { displayMode: false });
-  }
-  return null;
-}
-
-class Renderer extends marked.Renderer {
-  code(code, lang, escaped) {
-    if (!lang) {
-      const math = mathsExpression(code);
-      if (math) {
-        return math;
-      }
+const latexBlock = {
+  name: 'latexBlock',
+  level: 'block',
+  start(src) { return src.match(/\${2}\n/)?.index; },
+  tokenizer(src) {
+    const rule = /^\${2}\n([^]*?)\n\${2}/;
+    const match = rule.exec(src);
+    if (match) {
+      return {
+        type: 'latexBlock',
+        raw: match[0],
+        formula: match[1].trim(),
+      };
     }
-    return super.code(code, lang, escaped);
+  },
+  renderer(token) {
+    return katex.renderToString(token.formula, { displayMode: true })
   }
+};
 
-  codespan(text) {
-    const math = mathsExpression(text);
-    if (math) {
-      return math;
+const latexInline = {
+  name: 'latexInline',
+  level: 'inline',
+  start(src) { return src.match(/\$/)?.index; },
+  tokenizer(src) {
+    const rule = /^\$(.*?)\$/;
+    const match = rule.exec(src);
+    if (match) {
+      return {
+        type: 'latexInline',
+        raw: match[0],
+        formula: match[1].trim(),
+      };
     }
-    return super.codespan(text);
+  },
+  renderer(token) {
+    return katex.renderToString(token.formula, { displayMode: false })
   }
-}
+};
+
+marked.use({ extensions: [latexBlock, latexInline] })
 marked.setOptions({
-  renderer: new Renderer(),
   highlight: (code, language) => {
     const validLanguage = hljs.getLanguage(language) ? language : 'plaintext';
     return hljs.highlight(validLanguage, code).value;
