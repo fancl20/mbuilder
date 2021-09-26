@@ -19,16 +19,17 @@ async function renderCategory(context, category) {
 }
 
 async function copyAssets(context) {
-  if (fs.existsSync(context.inputAssets)) {
-    await fs.copy(context.inputAssets, context.outputAssets, { overwrite: true });
-  }
   const styles = path.join(context.outputAssets, 'styles');
   await fs.mkdir(styles, { recursive: true });
+
+  if (fs.existsSync(context.inputAssets)) {
+    fs.copy(context.inputAssets, context.outputAssets, { overwrite: true });
+  }
   const katexDir = path.dirname(require.resolve('katex'));
-  await fs.copy(path.join(katexDir, 'katex.min.css'), path.join(styles, 'katex/katex.min.css'));
-  await fs.copy(path.join(katexDir, 'fonts'), path.join(styles, 'katex/fonts'));
+  fs.copy(path.join(katexDir, 'katex.min.css'), path.join(styles, 'katex/katex.min.css'));
+  fs.copy(path.join(katexDir, 'fonts'), path.join(styles, 'katex/fonts'));
   const hljsDir = path.dirname(require.resolve('highlight.js'));
-  await fs.copy(path.join(hljsDir, '../styles'), path.join(styles, 'hljs'));
+  fs.copy(path.join(hljsDir, '../styles'), path.join(styles, 'hljs'));
 }
 
 module.exports = async (context) => {
