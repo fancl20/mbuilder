@@ -20,25 +20,25 @@ async function renderCategory(context, category) {
 
 async function copyAssets(context) {
   if (fs.existsSync(context.inputAssets)) {
-    fs.copy(context.inputAssets, context.outputAssets, { overwrite: true });
+    await fs.copy(context.inputAssets, context.outputAssets, { overwrite: true });
   }
   const styles = path.join(context.outputAssets, 'styles');
-  fs.mkdirSync(styles, { recursive: true });
+  await fs.mkdir(styles, { recursive: true });
   const katexDir = path.dirname(require.resolve('katex'));
-  fs.copy(path.join(katexDir, 'katex.min.css'), path.join(styles, 'katex/katex.min.css'));
-  fs.copy(path.join(katexDir, 'fonts'), path.join(styles, 'katex/fonts'));
+  await fs.copy(path.join(katexDir, 'katex.min.css'), path.join(styles, 'katex/katex.min.css'));
+  await fs.copy(path.join(katexDir, 'fonts'), path.join(styles, 'katex/fonts'));
   const hljsDir = path.dirname(require.resolve('highlight.js'));
-  fs.copy(path.join(hljsDir, '../styles'), path.join(styles, 'hljs'));
+  await fs.copy(path.join(hljsDir, '../styles'), path.join(styles, 'hljs'));
 }
 
 module.exports = async (context) => {
   const dirs = fs.opendirSync(context.inputContents);
-  fs.mkdirSync(context.outputContents, { recursive: true });
+  await fs.mkdir(context.outputContents, { recursive: true });
   for await (const file of dirs) {
     const category = path.basename(file.name, '.md');
     if (file.isDirectory()) {
       const output = path.join(context.outputContents, category);
-      fs.mkdirSync(output, { recursive: true });
+      await fs.mkdir(output, { recursive: true });
       renderCategory(context, category);
     } else {
       context.renderFile(file.name, category, category);
