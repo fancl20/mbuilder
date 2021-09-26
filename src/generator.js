@@ -49,7 +49,7 @@ module.exports = {
   },
   async generateMarkdownRenderer(filePath) {
     const md = fs.readFileSync(filePath, { encoding: 'utf8' });
-    const res = markdown(md);
+    const res = markdown(md, path.dirname(filePath));
     return [
       (rewriter) => { rewriter.emitRaw(res.html); },
       res.metadata,

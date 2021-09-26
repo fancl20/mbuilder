@@ -1,7 +1,7 @@
 const marked = require('marked');
+
+// Rendering $$..$$ and $..$ as Latex
 const katex = require('katex');
-const fm = require('front-matter');
-const hljs = require('highlight.js');
 
 const latexBlock = {
   name: 'latexBlock',
@@ -17,10 +17,11 @@ const latexBlock = {
         formula: match[1].trim(),
       };
     }
+    return false;
   },
   renderer(token) {
-    return katex.renderToString(token.formula, { displayMode: true })
-  }
+    return katex.renderToString(token.formula, { displayMode: true });
+  },
 };
 
 const latexInline = {
@@ -37,13 +38,45 @@ const latexInline = {
         formula: match[1].trim(),
       };
     }
+    return false;
   },
   renderer(token) {
-    return katex.renderToString(token.formula, { displayMode: false })
-  }
+    return katex.renderToString(token.formula, { displayMode: false });
+  },
 };
 
-marked.use({ extensions: [latexBlock, latexInline] })
+marked.use({ extensions: [latexBlock, latexInline] });
+
+// Rendering local image to base64 uri
+const fs = require('fs');
+const mime = require('mime-types');
+const path = require('path');
+
+const renderer = {
+  image(href, title, text) {
+    let filePath = href;
+    if (!path.isAbsolute(filePath)) {
+      filePath = path.join(this.options.cwd, filePath);
+    }
+    if (!fs.existsSync(filePath)) {
+      return false;
+    }
+    const imageMime = mime.lookup(filePath);
+    const imageBase64 = fs.readFileSync(filePath, 'base64');
+    let out = `<img src="data:${imageMime};base64,${imageBase64}" alt="${text}" `;
+    if (title) {
+      out += `title="${title}" `;
+    }
+    out += this.options.xhtml ? '/>' : '>';
+    return out;
+  },
+};
+
+marked.use({ renderer });
+
+// Rendering code highlight
+const hljs = require('highlight.js');
+
 marked.setOptions({
   highlight: (code, language) => {
     const validLanguage = hljs.getLanguage(language) ? language : 'plaintext';
@@ -51,10 +84,13 @@ marked.setOptions({
   },
 });
 
-module.exports = (text) => {
+// Export rendering function
+const fm = require('front-matter');
+
+module.exports = (text, cwd) => {
   const res = fm(text);
   return {
     metadata: res.attributes,
-    html: marked(res.body),
+    html: marked(res.body, { cwd }),
   };
 };
