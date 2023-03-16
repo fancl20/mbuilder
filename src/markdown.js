@@ -1,7 +1,7 @@
-const marked = require('marked');
+import { default as marked } from 'marked';
 
 // Rendering $$..$$ and $..$ as Latex
-const katex = require('katex');
+import { default as katex } from 'katex';
 
 const latexBlock = {
   name: 'latexBlock',
@@ -48,9 +48,9 @@ const latexInline = {
 marked.use({ extensions: [latexBlock, latexInline] });
 
 // Rendering local image to base64 uri
-const fs = require('fs');
-const mime = require('mime-types');
-const path = require('path');
+import { default as fs } from 'fs';
+import { default as mime } from 'mime-types';
+import { default as path } from 'path';
 
 const renderer = {
   image(href, title, text) {
@@ -75,7 +75,7 @@ const renderer = {
 marked.use({ renderer });
 
 // Rendering code highlight
-const hljs = require('highlight.js');
+import { default as hljs } from 'highlight.js';
 
 marked.setOptions({
   highlight: (code, language) => {
@@ -85,9 +85,9 @@ marked.setOptions({
 });
 
 // Export rendering function
-const fm = require('front-matter');
+import { default as fm } from 'front-matter';
 
-module.exports = (text, cwd) => {
+export function markdown(text, cwd) {
   const res = fm(text);
   return {
     metadata: res.attributes,

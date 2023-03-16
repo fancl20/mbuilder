@@ -1,5 +1,8 @@
-const fs = require('fs-extra');
-const path = require('path');
+import { default as fs } from 'fs-extra';
+import { default as path } from 'path';
+
+// TODO: until import-meta-resolve out of experimental
+import { createRequire } from 'node:module';
 
 async function renderCategory(context, category) {
   const inputPath = path.join(context.inputContents, category);
@@ -25,6 +28,8 @@ async function copyAssets(context) {
   if (fs.existsSync(context.inputAssets)) {
     fs.copy(context.inputAssets, context.outputAssets, { overwrite: true });
   }
+
+  const require = createRequire(import.meta.url);
   const katexDir = path.dirname(require.resolve('katex'));
   fs.copy(path.join(katexDir, 'katex.min.css'), path.join(styles, 'katex/katex.min.css'));
   fs.copy(path.join(katexDir, 'fonts'), path.join(styles, 'katex/fonts'));
@@ -32,7 +37,7 @@ async function copyAssets(context) {
   fs.copy(path.join(hljsDir, '../styles'), path.join(styles, 'hljs'));
 }
 
-module.exports = async (context) => {
+export async function mbuilder(context) {
   const dirs = fs.opendirSync(context.inputContents);
   await fs.mkdir(context.outputContents, { recursive: true });
   for await (const file of dirs) {

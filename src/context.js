@@ -1,9 +1,9 @@
-const fs = require('fs');
-const path = require('path');
+import { default as fs } from 'fs';
+import { default as path } from 'path';
 
-const gr = require('./generator');
+import * as gr from './generator.js';
 
-class Context {
+export class Context {
   constructor(obj) {
     Object.assign(this, obj);
   }
@@ -52,4 +52,3 @@ class Context {
     this.renderPage(navigator, content, f);
   }
 }
-module.exports = Context;

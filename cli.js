@@ -1,10 +1,10 @@
 #!/usr/bin/env node
-
-const program = require('commander');
-const mbuilder = require('./mbuilder');
-const Context = require('./src/context');
+import { Command } from 'commander';
+import { mbuilder } from './mbuilder.js';
+import { Context } from './src/context.js';
 
 async function main() {
+  const program = new Command();
   program
     .option('--input <path>', 'input dir')
     .option('--output <path>', 'output dir')

@@ -2,6 +2,7 @@
   "name": "mbuilder",
   "version": "1.1.0",
   "description": "",
+  "type": "module",
   "main": "mbuilder.js",
   "bin": "cli.js",
   "scripts": {
