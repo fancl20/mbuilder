@@ -16,6 +16,7 @@ module.exports = {
     ecmaVersion: 2021,
   },
   rules: {
-    "no-restricted-syntax": ["error", "ForInStatement", "LabeledStatement", "WithStatement"],
+    'no-restricted-syntax': ['error', 'ForInStatement', 'LabeledStatement', 'WithStatement'],
+    'import/extensions': ['error', 'always', { ignorePackages: true }]
   },
 };

@@ -1,7 +1,18 @@
-import { default as marked } from 'marked';
+import { marked } from 'marked';
 
 // Rendering $$..$$ and $..$ as Latex
-import { default as katex } from 'katex';
+import * as katex from 'katex';
+
+// Rendering local image to base64 uri
+import * as fs from 'fs';
+import * as mime from 'mime-types';
+import * as path from 'path';
+
+// Rendering code highlight
+import * as hljs from 'highlight.js';
+
+// Export rendering function
+import * as fm from 'front-matter';
 
 const latexBlock = {
   name: 'latexBlock',
@@ -47,11 +58,6 @@ const latexInline = {
 
 marked.use({ extensions: [latexBlock, latexInline] });
 
-// Rendering local image to base64 uri
-import { default as fs } from 'fs';
-import { default as mime } from 'mime-types';
-import { default as path } from 'path';
-
 const renderer = {
   image(href, title, text) {
     let filePath = href;
@@ -74,9 +80,6 @@ const renderer = {
 
 marked.use({ renderer });
 
-// Rendering code highlight
-import { default as hljs } from 'highlight.js';
-
 marked.setOptions({
   highlight: (code, language) => {
     const validLanguage = hljs.getLanguage(language) ? language : 'plaintext';
@@ -84,13 +87,11 @@ marked.setOptions({
   },
 });
 
-// Export rendering function
-import { default as fm } from 'front-matter';
-
 export function markdown(text, cwd) {
-  const res = fm(text);
+  const res = fm.default(text);
   return {
     metadata: res.attributes,
     html: marked(res.body, { cwd }),
   };
-};
+}
+export default markdown;

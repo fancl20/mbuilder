@@ -1,5 +1,5 @@
-import { default as fs } from 'fs';
-import { default as path } from 'path';
+import * as fs from 'fs';
+import * as path from 'path';
 
 import * as gr from './generator.js';
 
@@ -52,3 +52,4 @@ export class Context {
     this.renderPage(navigator, content, f);
   }
 }
+export default Context;

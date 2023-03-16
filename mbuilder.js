@@ -1,5 +1,5 @@
 import { default as fs } from 'fs-extra';
-import { default as path } from 'path';
+import * as path from 'path';
 
 // TODO: until import-meta-resolve out of experimental
 import { createRequire } from 'node:module';
