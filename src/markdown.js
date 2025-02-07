@@ -60,7 +60,7 @@ marked.use({ extensions: [latexBlock, latexInline] });
 
 const renderer = {
   image(href, title, text) {
-    let filePath = href;
+    let filePath = href.toString();
     if (!path.isAbsolute(filePath)) {
       filePath = path.join(this.options.cwd, filePath);
     }

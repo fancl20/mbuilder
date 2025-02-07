@@ -1,6 +1,6 @@
 {
   "name": "mbuilder",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "",
   "type": "module",
   "main": "mbuilder.js",
@@ -8,25 +8,23 @@
   "scripts": {
     "cli": "node cli.js",
     "lint": "eslint src/**/*.js",
-    "start": "http-server"
+    "start": "python3 -m http.server -d"
   },
   "keywords": [],
   "author": "",
   "license": "BSD-3-Clause",
   "dependencies": {
-    "commander": "^8.3.0",
+    "commander": "^13.1.0",
     "front-matter": "^4.0.2",
-    "fs-extra": "^10.1.0",
-    "highlight.js": "^11.7.0",
-    "katex": "^0.11.1",
-    "marked": "^4.2.12",
+    "fs-extra": "^11.3.0",
+    "highlight.js": "^11.11.1",
+    "katex": "^0.16.21",
+    "marked": "^15.0.6",
     "mime-types": "^2.1.35",
-    "parse5-html-rewriting-stream": "^6.0.1"
+    "parse5-html-rewriting-stream": "^7.0.0"
   },
   "devDependencies": {
-    "eslint": "^7.32.0",
-    "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-plugin-import": "^2.27.5",
-    "http-server": "^13.1.0"
+    "@eslint/js": "^9.19.0",
+    "globals": "^15.14.0"
   }
 }

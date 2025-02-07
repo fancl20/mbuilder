@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import RewritingStream from 'parse5-html-rewriting-stream';
+import { RewritingStream } from 'parse5-html-rewriting-stream';
 
 import { markdown } from './markdown.js';
 
